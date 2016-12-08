@@ -10,9 +10,9 @@ namespace OpenGLTutorial
         private const int Width = 1280;
         private const int Height = 720;
         private static ShaderProgram _program;
-        private static VBO<Vector3> _triangle, _square;
-        private static VBO<int> _triangleElements, _squareElements;
-        private static VBO<Vector3> _triangleColor, _squareColor;
+        private static VBO<Vector3> _pyramid, _cube;
+        private static VBO<int> _pyramidTriangles, _cubeQuads;
+        private static VBO<Vector3> _pyramidColor, _cubeColor;
         private static Stopwatch _watch;
         private static float _angle;
 
@@ -29,6 +29,9 @@ namespace OpenGLTutorial
             Glut.glutDisplayFunc(OnDisplay);
             Glut.glutCloseFunc(OnClose);
 
+            // enable depth testing to ensure correct z-ordering of our fragments
+            Gl.Enable(EnableCap.DepthTest);
+
             // compile the shader program
             _program = new ShaderProgram(VertexShader, FragmentShader);
 
@@ -37,18 +40,37 @@ namespace OpenGLTutorial
             _program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)Width / Height, 0.1f, 1000f));
             _program["view_matrix"].SetValue(Matrix4.LookAt(new Vector3(0, 0, 10), Vector3.Zero, new Vector3(0, 1, 0)));
 
-            // create a triangle
-            _triangle = new VBO<Vector3>(new[] { new Vector3(0, 1, 0), new Vector3(-1, -1, 0), new Vector3(1, -1, 0) });
-            _triangleColor = new VBO<Vector3>(new[] { new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1), });
-            _triangleElements = new VBO<int>(new[] { 0, 1, 2 }, BufferTarget.ElementArrayBuffer);
+            // create a pyramid with vertices and colors
+            _pyramid = new VBO<Vector3>(new[] {
+                new Vector3(0, 1, 0), new Vector3(-1, -1, 1), new Vector3(1, -1, 1),        // front face
+                new Vector3(0, 1, 0), new Vector3(1, -1, 1), new Vector3(1, -1, -1),        // right face
+                new Vector3(0, 1, 0), new Vector3(1, -1, -1), new Vector3(-1, -1, -1),      // back face
+                new Vector3(0, 1, 0), new Vector3(-1, -1, -1), new Vector3(-1, -1, 1) });   // left face
+            _pyramidColor = new VBO<Vector3>(new[] {
+                new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1),
+                new Vector3(1, 0, 0), new Vector3(0, 0, 1), new Vector3(0, 1, 0),
+                new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1),
+                new Vector3(1, 0, 0), new Vector3(0, 0, 1), new Vector3(0, 1, 0) });
+            _pyramidTriangles = new VBO<int>(new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, BufferTarget.ElementArrayBuffer);
 
-            // create a square
-            _square = new VBO<Vector3>(new[] { new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0), new Vector3(-1, -1, 0) });
-            _squareColor = new VBO<Vector3>(new[] {new Vector3(0.5f,0.5f,1), new Vector3(0.5f, 0.5f, 1), new Vector3(0.5f, 0.5f, 1), new Vector3(0.5f, 0.5f, 1) });
-            _squareElements = new VBO<int>(new[] { 0, 1, 2, 3 }, BufferTarget.ElementArrayBuffer);
+            // create a cube with vertices and colors
+            _cube = new VBO<Vector3>(new[] {
+                new Vector3(1, 1, -1), new Vector3(-1, 1, -1), new Vector3(-1, 1, 1), new Vector3(1, 1, 1),
+                new Vector3(1, -1, 1), new Vector3(-1, -1, 1), new Vector3(-1, -1, -1), new Vector3(1, -1, -1),
+                new Vector3(1, 1, 1), new Vector3(-1, 1, 1), new Vector3(-1, -1, 1), new Vector3(1, -1, 1),
+                new Vector3(1, -1, -1), new Vector3(-1, -1, -1), new Vector3(-1, 1, -1), new Vector3(1, 1, -1),
+                new Vector3(-1, 1, 1), new Vector3(-1, 1, -1), new Vector3(-1, -1, -1), new Vector3(-1, -1, 1),
+                new Vector3(1, 1, -1), new Vector3(1, 1, 1), new Vector3(1, -1, 1), new Vector3(1, -1, -1) });
+            _cubeColor = new VBO<Vector3>(new[] {
+                new Vector3(0, 1, 0), new Vector3(0, 1, 0), new Vector3(0, 1, 0), new Vector3(0, 1, 0),
+                new Vector3(1, 0.5f, 0), new Vector3(1, 0.5f, 0), new Vector3(1, 0.5f, 0), new Vector3(1, 0.5f, 0),
+                new Vector3(1, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 0, 0),
+                new Vector3(1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, 1, 0),
+                new Vector3(0, 0, 1), new Vector3(0, 0, 1), new Vector3(0, 0, 1), new Vector3(0, 0, 1),
+                new Vector3(1, 0, 1), new Vector3(1, 0, 1), new Vector3(1, 0, 1), new Vector3(1, 0, 1) });
+            _cubeQuads = new VBO<int>(new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 }, BufferTarget.ElementArrayBuffer);
 
-            _watch = new Stopwatch();
-            _watch.Start();
+            _watch = Stopwatch.StartNew();
 
             Glut.glutMainLoop();
         }
@@ -56,12 +78,12 @@ namespace OpenGLTutorial
         private static void OnClose()
         {
             // dispose of all of the resources that were created
-            _triangle.Dispose();
-            _triangleElements.Dispose();
-            _triangleColor.Dispose();
-            _square.Dispose();
-            _squareColor.Dispose();
-            _squareElements.Dispose();
+            _pyramid.Dispose();
+            _pyramidColor.Dispose();
+            _pyramidTriangles.Dispose();
+            _cube.Dispose();
+            _cubeColor.Dispose();
+            _cubeQuads.Dispose();
             _program.DisposeChildren = true;
             _program.Dispose();
         }
@@ -73,10 +95,12 @@ namespace OpenGLTutorial
 
         private static void OnRenderFrame()
         {
+            // calculate how much time has elapsed since the last frame
             _watch.Stop();
-            float deltaTime = (float)_watch.ElapsedTicks/ Stopwatch.Frequency;
+            float deltaTime = (float)_watch.ElapsedTicks / Stopwatch.Frequency;
             _watch.Restart();
 
+            // use the deltaTime to adjust the angle of the cube and pyramid
             _angle += deltaTime;
 
             // set up the OpenGL viewport and clear both the color and depth bits
@@ -86,30 +110,23 @@ namespace OpenGLTutorial
             // use our shader program
             Gl.UseProgram(_program);
 
-            // transform the triangle
+            // bind the vertex positions, colors and elements of the pyramid
             _program["model_matrix"].SetValue(Matrix4.CreateRotationY(_angle) * Matrix4.CreateTranslation(new Vector3(-1.5f, 0, 0)));
+            Gl.BindBufferToShaderAttribute(_pyramid, _program, "vertexPosition");
+            Gl.BindBufferToShaderAttribute(_pyramidColor, _program, "vertexColor");
+            Gl.BindBuffer(_pyramidTriangles);
 
-            // bind the vertex attribute arrays for the triangle (the hard way)
-            uint vertexPositionIndex = (uint)Gl.GetAttribLocation(_program.ProgramID, "vertexPosition");
-            Gl.EnableVertexAttribArray(vertexPositionIndex);
-            Gl.BindBuffer(_triangle);
-            Gl.VertexAttribPointer(vertexPositionIndex, _triangle.Size, _triangle.PointerType, true, 12, IntPtr.Zero);
-            Gl.BindBufferToShaderAttribute(_triangleColor, _program, "vertexColor");
-            Gl.BindBuffer(_triangleElements);
+            // draw the pyramid
+            Gl.DrawElements(BeginMode.Triangles, _pyramidTriangles.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
-            // draw the triangle
-            Gl.DrawElements(BeginMode.Triangles, _triangleElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            // bind the vertex positions, colors and elements of the cube
+            _program["model_matrix"].SetValue(Matrix4.CreateRotationY(_angle / 2) * Matrix4.CreateRotationX(_angle) * Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0)));
+            Gl.BindBufferToShaderAttribute(_cube, _program, "vertexPosition");
+            Gl.BindBufferToShaderAttribute(_cubeColor, _program, "vertexColor");
+            Gl.BindBuffer(_cubeQuads);
 
-            // transform the square
-            _program["model_matrix"].SetValue(Matrix4.CreateRotationX(_angle) * Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0)));
-
-            // bind the vertex attribute arrays for the square (the easy way)
-            Gl.BindBufferToShaderAttribute(_square, _program, "vertexPosition");
-            Gl.BindBuffer(_squareElements);
-            Gl.BindBufferToShaderAttribute(_squareColor, _program, "vertexColor");
-
-            // draw the square
-            Gl.DrawElements(BeginMode.Quads, _squareElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            // draw the cube
+            Gl.DrawElements(BeginMode.Quads, _cubeQuads.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
             Glut.glutSwapBuffers();
         }
