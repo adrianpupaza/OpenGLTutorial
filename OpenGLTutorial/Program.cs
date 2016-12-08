@@ -52,7 +52,9 @@ namespace OpenGLTutorial
             // dispose of all of the resources that were created
             _triangle.Dispose();
             _triangleElements.Dispose();
+            _triangleColor.Dispose();
             _square.Dispose();
+            _squareColor.Dispose();
             _squareElements.Dispose();
             _program.DisposeChildren = true;
             _program.Dispose();
@@ -104,7 +106,6 @@ namespace OpenGLTutorial
 #version 130
 in vec3 vertexPosition;
 in vec3 vertexColor;
-
 out vec3 color;
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
