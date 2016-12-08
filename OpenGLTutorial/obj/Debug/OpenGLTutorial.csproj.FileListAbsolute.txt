@@ -1,0 +1,3 @@
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGLTutorial.exe.config
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial.exe
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial.pdb

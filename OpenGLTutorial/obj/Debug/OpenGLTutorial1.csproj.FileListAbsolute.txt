@@ -1,0 +1,8 @@
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial1.csprojResolveAssemblyReference.cache
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGLTutorial.exe.config
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGLTutorial.exe
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGLTutorial.pdb
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGL.dll
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\Tao.FreeGlut.dll
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial.exe
+c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial.pdb
