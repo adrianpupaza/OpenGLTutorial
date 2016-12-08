@@ -11,6 +11,7 @@ namespace OpenGLTutorial
         private static ShaderProgram _program;
         private static VBO<Vector3> _triangle, _square;
         private static VBO<int> _triangleElements, _squareElements;
+        private static VBO<Vector3> _triangleColor, _squareColor;
 
         private static void Main()
         {
@@ -35,10 +36,12 @@ namespace OpenGLTutorial
 
             // create a triangle
             _triangle = new VBO<Vector3>(new[] { new Vector3(0, 1, 0), new Vector3(-1, -1, 0), new Vector3(1, -1, 0) });
+            _triangleColor = new VBO<Vector3>(new[] { new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1), });
             _triangleElements = new VBO<int>(new[] { 0, 1, 2 }, BufferTarget.ElementArrayBuffer);
 
             // create a square
             _square = new VBO<Vector3>(new[] { new Vector3(-1, 1, 0), new Vector3(1, 1, 0), new Vector3(1, -1, 0), new Vector3(-1, -1, 0) });
+            _squareColor = new VBO<Vector3>(new[] {new Vector3(0.5f,0.5f,1), new Vector3(0.5f, 0.5f, 1), new Vector3(0.5f, 0.5f, 1), new Vector3(0.5f, 0.5f, 1) });
             _squareElements = new VBO<int>(new[] { 0, 1, 2, 3 }, BufferTarget.ElementArrayBuffer);
 
             Glut.glutMainLoop();
@@ -77,6 +80,7 @@ namespace OpenGLTutorial
             Gl.EnableVertexAttribArray(vertexPositionIndex);
             Gl.BindBuffer(_triangle);
             Gl.VertexAttribPointer(vertexPositionIndex, _triangle.Size, _triangle.PointerType, true, 12, IntPtr.Zero);
+            Gl.BindBufferToShaderAttribute(_triangleColor, _program, "vertexColor");
             Gl.BindBuffer(_triangleElements);
 
             // draw the triangle
@@ -88,6 +92,7 @@ namespace OpenGLTutorial
             // bind the vertex attribute arrays for the square (the easy way)
             Gl.BindBufferToShaderAttribute(_square, _program, "vertexPosition");
             Gl.BindBuffer(_squareElements);
+            Gl.BindBufferToShaderAttribute(_squareColor, _program, "vertexColor");
 
             // draw the square
             Gl.DrawElements(BeginMode.Quads, _squareElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
@@ -98,21 +103,26 @@ namespace OpenGLTutorial
         public static string VertexShader = @"
 #version 130
 in vec3 vertexPosition;
+in vec3 vertexColor;
+
+out vec3 color;
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
 uniform mat4 model_matrix;
 void main(void)
 {
+    color = vertexColor;
     gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition, 1);
 }
 ";
 
         public static string FragmentShader = @"
 #version 130
+in vec3 color;
 out vec4 fragment;
 void main(void)
 {
-    fragment = vec4(1, 1, 1, 1);
+    fragment = vec4(color, 1);
 }
 ";
     }
