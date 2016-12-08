@@ -5,3 +5,4 @@ C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutor
 C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGLTutorial.pdb
 C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGL.dll
 C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\Tao.FreeGlut.dll
+C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial.csprojResolveAssemblyReference.cache
