@@ -1,7 +1,6 @@
 c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGLTutorial.exe.config
 c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial.exe
 c:\users\adrian\documents\visual studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial.pdb
-C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\obj\Debug\OpenGLTutorial.csprojResolveAssemblyReference.cache
 C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGLTutorial.exe
 C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGLTutorial.pdb
 C:\Users\Adrian\Documents\Visual Studio 2015\Projects\OpenGLTutorial\OpenGLTutorial\bin\Debug\OpenGL.dll
