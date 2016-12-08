@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using OpenGL;
 using Tao.FreeGlut;
 
@@ -12,6 +13,8 @@ namespace OpenGLTutorial
         private static VBO<Vector3> _triangle, _square;
         private static VBO<int> _triangleElements, _squareElements;
         private static VBO<Vector3> _triangleColor, _squareColor;
+        private static Stopwatch _watch;
+        private static float _angle;
 
         private static void Main()
         {
@@ -44,6 +47,9 @@ namespace OpenGLTutorial
             _squareColor = new VBO<Vector3>(new[] {new Vector3(0.5f,0.5f,1), new Vector3(0.5f, 0.5f, 1), new Vector3(0.5f, 0.5f, 1), new Vector3(0.5f, 0.5f, 1) });
             _squareElements = new VBO<int>(new[] { 0, 1, 2, 3 }, BufferTarget.ElementArrayBuffer);
 
+            _watch = new Stopwatch();
+            _watch.Start();
+
             Glut.glutMainLoop();
         }
 
@@ -67,6 +73,12 @@ namespace OpenGLTutorial
 
         private static void OnRenderFrame()
         {
+            _watch.Stop();
+            float deltaTime = (float)_watch.ElapsedTicks/ Stopwatch.Frequency;
+            _watch.Restart();
+
+            _angle += deltaTime;
+
             // set up the OpenGL viewport and clear both the color and depth bits
             Gl.Viewport(0, 0, Width, Height);
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -75,7 +87,7 @@ namespace OpenGLTutorial
             Gl.UseProgram(_program);
 
             // transform the triangle
-            _program["model_matrix"].SetValue(Matrix4.CreateTranslation(new Vector3(-1.5f, 0, 0)));
+            _program["model_matrix"].SetValue(Matrix4.CreateRotationY(_angle) * Matrix4.CreateTranslation(new Vector3(-1.5f, 0, 0)));
 
             // bind the vertex attribute arrays for the triangle (the hard way)
             uint vertexPositionIndex = (uint)Gl.GetAttribLocation(_program.ProgramID, "vertexPosition");
@@ -89,7 +101,7 @@ namespace OpenGLTutorial
             Gl.DrawElements(BeginMode.Triangles, _triangleElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
 
             // transform the square
-            _program["model_matrix"].SetValue(Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0)));
+            _program["model_matrix"].SetValue(Matrix4.CreateRotationX(_angle) * Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0)));
 
             // bind the vertex attribute arrays for the square (the easy way)
             Gl.BindBufferToShaderAttribute(_square, _program, "vertexPosition");
